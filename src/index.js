@@ -1,13 +1,17 @@
 const express = require("express");
 const app = express();
+const dotenv = require('dotenv').config()
+const colors = require('colors')
+const morgan = require('morgan')
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
-const PORT = 4000 || process.env.PORT;
+const PORT = process.env.PORT || 5000
 
-app.get("/", (req, res) => {
-  res.send("<h1>serverrrrr<h1>");
-});
+const topics = require('../routes/topics')
 
+app.use('/api/v1/topics', topics)
+
+// Socket.io
 io.on("connection", (socket) => {
   console.log("a user connected");
   socket.on('topic', (topic) => {
@@ -16,6 +20,8 @@ io.on("connection", (socket) => {
   })
 });
 
+console.log(PORT)
+
 http.listen(PORT, () => {
-  console.log("listening on *:4000");
+  console.log(`listening on port ${PORT} in ${process.env.NODE_ENV} `);
 });
