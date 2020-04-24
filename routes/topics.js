@@ -3,10 +3,16 @@ const router = express.Router();
 const {
   getTopics,
   addTopic,
-  deleteTopic,
+  deleteTopic
 } = require("../controllers/topicsController");
+const {
+  addUsername
+} = require("../controllers/userController");
 
-router.route("/").get(getTopics).post(addTopic);
+
+router.route('/user').post(addUsername);
+
+router.route("/").get(getTopics).post(addTopic)
 
 router.route('/:id').delete(deleteTopic)
 
