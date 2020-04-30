@@ -13,14 +13,14 @@ const typeDefs = gql`
   type User {
     id: ID!
     name: String!
-    topPoints: Int!
+    topPoints: Int
   }
 
   type Topic {
     id: ID!
     msg: String!
     date: Date
-    likes: Int!
+    likes: Int
     status: Status
     user: [User]
   }
@@ -29,24 +29,43 @@ const typeDefs = gql`
     topics: [Topic]
     topic(id: ID): Topic
   }
+
+  input UserInput {
+    id: ID
+    name: String
+    topPoints: Int
+  }
+
+  input TopicInput {
+    id: ID
+    msg: String
+    date: Date
+    likes: Int
+    status: Status
+    user: [UserInput]
+  }
+
+  type Mutation {
+    addTopic(topic: TopicInput): [Topic]
+  }
 `;
 
 const users = [
   {
     id: "jean",
     name: "The Carlos",
-    topPoints: 46
+    topPoints: 46,
   },
   {
     id: "nol",
     name: "supanola",
-    topPoints: 92
+    topPoints: 92,
   },
   {
-    id: 'jay',
-    name: 'l0tso',
-    topPoints: 465
-  }
+    id: "jay",
+    name: "l0tso",
+    topPoints: 465,
+  },
 ];
 
 const topics = [
@@ -71,11 +90,8 @@ const topics = [
         id: "nol",
       },
     ],
-
-    
   },
 ];
-
 
 /*A resolver is a function that's responsible for populating the data for a single field in your schema. It can populate that data in any way you define, such as by fetching data from a back-end database or a third-party API. If you don't define a resolver for a particular field, Apollo Server automatically defines a default resolver for it.*/
 const resolvers = {
@@ -92,14 +108,33 @@ const resolvers = {
   },
 
   Topic: {
-    user: (obj, arg, context) => {
-      const userIds = obj.user.map(u => u.id );
+    user: (obj, args, context) => {
+      const userIds = obj.user.map((u) => u.id);
       const filteredUsers = users.filter((u) => {
         return userIds.includes(u.id);
       });
       return filteredUsers;
     },
   },
+
+  Mutation: {
+    addTopic: (obj, { topic }, { userId }) => {
+      if (userId) {
+        const newTopicsList = [
+          ...topics,
+          //New Topic data
+          topic,
+        ];
+        // Return data as expected
+        return newTopicsList;
+      } else {
+        return topics
+      }
+     
+    },
+  },
+
+  
 
   Date: new GraphQLScalarType({
     name: "Date",
@@ -124,6 +159,15 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  //Add context like usernames and authentication. passes through resolvers as context etc.... 
+  context: ({ req }) => {
+    const fakeUser = {
+      userId: "helloImaUser",
+    };
+    return {
+      ...fakeUser,
+    };
+  },
   introspection: true,
   playground: true,
 });
