@@ -1,27 +1,46 @@
 const { ApolloServer, gql } = require("apollo-server");
 
-
 const typeDefs = gql`
+  enum Status {
+    SEEN
+    UNSEEN
+  }
+
+  type User {
+    id: ID!
+    name: String!
+  }
+
   type Topic {
-    msg: String
-    from: String
-    likes: Int
+    id: ID!
+    msg: String!
+    likes: Int!
+    status: Status
+    user: User!
   }
 
   type Query {
     topics: [Topic]
+    topic(id: ID): Topic
   }
 `;
 
 const topics = [
   {
+    id: 44444,
     msg: "this is a topic",
-    from: "jean",
     likes: 5,
+    user: {
+      name: "jean",
+    },
   },
   {
+    id: 44455,
     msg: "this is a topic 2222",
-    from: "nol",
+    user: {
+      name: "nol",
+    },
+
     likes: 2,
   },
 ];
@@ -31,17 +50,17 @@ const resolvers = {
     topics: () => {
       return topics;
     },
+    topic: () => {
+      return topics[0]
+    }
   },
 };
-
-
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
 server.listen().then(({ url }) => {
-  console.log(`Server started at ${url}`)
+  console.log(`Server started at ${url}`);
 });
-
 
 // Socket.io
 // io.on("connection", (socket) => {
