@@ -27,7 +27,7 @@ const typeDefs = gql`
 
 const topics = [
   {
-    id: 44444,
+    id: "44444",
     msg: "this is a topic",
     likes: 5,
     user: {
@@ -35,7 +35,7 @@ const topics = [
     },
   },
   {
-    id: 44455,
+    id: "44455",
     msg: "this is a topic 2222",
     user: {
       name: "nol",
@@ -50,9 +50,12 @@ const resolvers = {
     topics: () => {
       return topics;
     },
-    topic: () => {
-      return topics[0]
-    }
+    topic: (obj, {id}, context, info) => {
+      const foundTopic = topics.find((t) => {
+        return id === t.id;
+      });
+      return foundTopic;
+    },
   },
 };
 
