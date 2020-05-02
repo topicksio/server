@@ -1,6 +1,15 @@
 const { ApolloServer, gql } = require("apollo-server");
 const { GraphQLScalarType } = require("graphql");
 const { Kind } = require("graphql/language");
+const mongoose = require("mongoose");
+require("dotenv").config();
+
+const db = mongoose.connection;
+
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const typeDefs = gql`
   scalar Date
@@ -128,13 +137,10 @@ const resolvers = {
         // Return data as expected
         return newTopicsList;
       } else {
-        return topics
+        return topics;
       }
-     
     },
   },
-
-  
 
   Date: new GraphQLScalarType({
     name: "Date",
@@ -159,7 +165,7 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  //Add context like usernames and authentication. passes through resolvers as context etc.... 
+  //Add context like usernames and authentication. passes through resolvers as context etc....
   context: ({ req }) => {
     const fakeUser = {
       userId: "helloImaUser",
@@ -172,13 +178,18 @@ const server = new ApolloServer({
   playground: true,
 });
 
-server
-  .listen({
-    port: process.env.PORT || 5000,
-  })
-  .then(({ url }) => {
-    console.log(`Server started at ${url}`);
-  });
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", function () {
+  console.log("db connected");
+
+  server
+    .listen({
+      port: process.env.PORT || 5000,
+    })
+    .then(({ url }) => {
+      console.log(`Server started at ${url}`);
+    });
+});
 
 // Socket.io
 // io.on("connection", (socket) => {
