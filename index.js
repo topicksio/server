@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const resolvers = require("./resolvers/resolvers");
 const typeDefs = require("./schemas/typeDefs");
 require("dotenv").config();
-
 const db = mongoose.connection;
 
 mongoose.connect(process.env.MONGO_URI, {
