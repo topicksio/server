@@ -26,9 +26,7 @@ const server = new ApolloServer({
     };
   },
   introspection: true,
-  playground: {
-    endpoint: "/graphql",
-  },
+  playground: true,
 });
 
 server.applyMiddleware({ app });
