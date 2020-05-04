@@ -34,10 +34,10 @@ server.applyMiddleware({ app });
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
   console.log("db connected");
-  app.listen(
-    {
+  app
+    .listen({
       port: process.env.PORT || 5000,
-    },
-    () => console.log(`Server started at http://localhost:${process.env.PORT}`)
-  );
+    } , () => {
+      console.log(`Server started at http://localhost:${process.env.PORT}`)
+    })
 });
