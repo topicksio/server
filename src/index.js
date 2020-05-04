@@ -1,9 +1,9 @@
-const { ApolloServer, gql } = require("apollo-server-express");
+const { ApolloServer } = require("apollo-server-express");
 const express = require("express");
-const mongoose = require("mongoose");
 const app = express();
-const resolvers = require('../resolvers/resolvers')
-const typeDefs = require('../schemas/typeDefs')
+const mongoose = require("mongoose");
+const resolvers = require("../resolvers/resolvers");
+const typeDefs = require("../schemas/typeDefs");
 require("dotenv").config();
 
 const db = mongoose.connection;
@@ -13,11 +13,10 @@ mongoose.connect(process.env.MONGO_URI, {
   useUnifiedTopology: true,
 });
 
-
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  //Add context like usernames and authentication. passes through resolvers as context etc....
+  //Add context like usernames and 0authentication. passes through resolvers as context etc....
   context: ({ req }) => {
     const fakeUser = {
       userId: "helloImaUser",
@@ -28,7 +27,7 @@ const server = new ApolloServer({
   },
   introspection: true,
   playground: {
-    endpoint: '/graphql',
+    endpoint: "/graphql",
   },
 });
 
