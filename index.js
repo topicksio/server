@@ -8,7 +8,7 @@ require("dotenv").config();
 
 const db = mongoose.connection;
 
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect('mongodb+srv://Lotso:121291jay@topicksio-cluster-mbiyz.mongodb.net/test?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
