@@ -8,10 +8,17 @@ require("dotenv").config();
 
 const db = mongoose.connection;
 
-mongoose.connect('mongodb+srv://Lotso:121291jay@topicksio-cluster-mbiyz.mongodb.net/test?retryWrites=true&w=majority', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  process.env.MONGO_URI,
+  { useNewUrlParser: true, useUnifiedTopology: true },
+  (err, res) => {
+    if (err) {
+      console.log("ERROR connecting to: " + process.env.MONGO_URI + ". " + err);
+    } else {
+      console.log("Succeeded connected to: " + process.env.MONGO_URI);
+    }
+  }
+);
 
 const server = new ApolloServer({
   typeDefs,
@@ -34,10 +41,12 @@ server.applyMiddleware({ app });
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
   console.log("db connected");
-  app
-    .listen({
+  app.listen(
+    {
       port: process.env.PORT || 5000,
-    } , () => {
-      console.log(`Server started at http://localhost:${process.env.PORT}`)
-    })
+    },
+    () => {
+      console.log(`Server started at http://localhost:${process.env.PORT}`);
+    }
+  );
 });
