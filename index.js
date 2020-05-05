@@ -1,17 +1,18 @@
 const { ApolloServer } = require("apollo-server-express");
 const express = require("express");
+const http = require('http')
 const app = express();
 const mongoose = require("mongoose");
 const resolvers = require("./resolvers/resolvers");
 const typeDefs = require("./schemas/typeDefs");
 require("dotenv").config();
+const uristring = process.env.MONGO_URI
 
-const db = mongoose.connection;
 
 mongoose.connect(
-  process.env.MONGO_URI,
+  uristring,
   { useNewUrlParser: true, useUnifiedTopology: true },
-  (err, res) => {
+  function (err, res) {
     if (err) {
       console.log("ERROR connecting to: " + process.env.MONGO_URI + ". " + err);
     } else {
@@ -19,6 +20,8 @@ mongoose.connect(
     }
   }
 );
+
+const db = mongoose.connection;
 
 const server = new ApolloServer({
   typeDefs,
@@ -37,6 +40,8 @@ const server = new ApolloServer({
 });
 
 server.applyMiddleware({ app });
+
+
 
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
