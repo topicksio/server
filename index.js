@@ -1,5 +1,6 @@
 const { ApolloServer } = require("apollo-server-express");
 const express = require("express");
+const color = require('colors')
 const http = require('http')
 const app = express();
 const mongoose = require("mongoose");
@@ -11,14 +12,7 @@ const uristring = process.env.MONGO_URI
 
 mongoose.connect(
   uristring,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  function (err, res) {
-    if (err) {
-      console.log("ERROR connecting to: " + process.env.MONGO_URI + ". " + err);
-    } else {
-      console.log("Succeeded connected to: " + process.env.MONGO_URI);
-    }
-  }
+  { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
 const db = mongoose.connection;
@@ -43,15 +37,15 @@ server.applyMiddleware({ app });
 
 
 
-db.on("error", console.error.bind(console, "connection error:"));
+db.on("error", console.error.bind(console, "connection error:".bgRed));
 db.once("open", function () {
-  console.log("db connected");
+  console.log("✅ db connected".bgBrightMagenta);
   app.listen(
     {
       port: process.env.PORT || 5000,
     },
     () => {
-      console.log(`Server started at http://localhost:${process.env.PORT}`);
+      console.log(`Server started at http://localhost:${process.env.PORT}`.bgBrightCyan);
     }
   );
 });
