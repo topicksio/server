@@ -46,4 +46,8 @@ module.exports = gql`
   type Mutation {
     addTopic(topic: TopicInput): [Topic]
   }
+
+  type Subscription {
+    topicAdded: Topic
+  }
 `;

@@ -1,60 +1,37 @@
+const { PubSub } = require("apollo-server");
 const { GraphQLScalarType } = require("graphql");
 const { Kind } = require("graphql/language");
+const Topic = require("../schemas/topicSchema");
 
-const users = [
-  {
-    id: "jean",
-    name: "The Carlos",
-    topPoints: 46,
-  },
-  {
-    id: "nol",
-    name: "supanola",
-    topPoints: 92,
-  },
-  {
-    id: "jay",
-    name: "l0tso",
-    topPoints: 465,
-  },
-];
-
-const topics = [
-  {
-    id: "44444",
-    msg: "this is a topic",
-    date: new Date("04-20-2020"),
-    likes: 5,
-    user: [
-      {
-        id: "jean",
-      },
-    ],
-  },
-  {
-    id: "44455",
-    msg: "this is a topic 2222",
-    date: new Date("04-24-2020"),
-    likes: 2,
-    user: [
-      {
-        id: "nol",
-      },
-    ],
-  },
-];
+const pubsub = new PubSub();
+const TOPIC_ADDED = "TOPIC_ADDED";
 
 /*A resolver is a function that's responsible for populating the data for a single field in your schema. It can populate that data in any way you define, such as by fetching data from a back-end database or a third-party API. If you don't define a resolver for a particular field, Apollo Server automatically defines a default resolver for it.*/
 module.exports = {
+  Subscription: {
+    topicAdded: {
+      subscribe: () => pubsub.asyncIterator([TOPIC_ADDED]),
+    },
+  },
+
   Query: {
     topics: () => {
-      return topics;
+      try {
+        const allTopics = Topic.find();
+        return allTopics;
+      } catch (e) {
+        console.log(e);
+        return [];
+      }
     },
-    topic: (obj, { id }, context, info) => {
-      const foundTopic = topics.find((t) => {
-        return id === t.id;
-      });
-      return foundTopic;
+    topic: async (obj, { id }, context, info) => {
+      try {
+        const foundTopic = await Topic.findById(id);
+        return foundTopic;
+      } catch (e) {
+        console.log(e);
+        return {};
+      }
     },
   },
 
@@ -69,17 +46,21 @@ module.exports = {
   },
 
   Mutation: {
-    addTopic: (obj, { topic }, { userId }) => {
-      if (userId) {
-        const newTopicsList = [
-          ...topics,
-          //New Topic data
-          topic,
-        ];
-        // Return data as expected
-        return newTopicsList;
-      } else {
+    addTopic: async (obj, { topic }, { userId }) => {
+      console.log(userId);
+
+      try {
+        if (userId) {
+          const newTopic = await Topic.create({
+            ...topic,
+          });
+          pubsub.publish(TOPIC_ADDED, { topicAdded: newTopic });
+          const allTopics = await Topic.find();
+          return allTopics;
+        }
         return topics;
+      } catch (e) {
+        return [];
       }
     },
   },
@@ -103,3 +84,46 @@ module.exports = {
     },
   }),
 };
+
+// const users = [
+//   {
+//     id: "jean",
+//     name: "The Carlos",
+//     topPoints: 46,
+//   },
+//   {
+//     id: "nol",
+//     name: "supanola",
+//     topPoints: 92,
+//   },
+//   {
+//     id: "jay",
+//     name: "l0tso",
+//     topPoints: 465,
+//   },
+// ];
+
+// const topics = [
+//   {
+//     id: "44444",
+//     msg: "this is a topic",
+//     date: new Date("04-20-2020"),
+//     likes: 5,
+//     user: [
+//       {
+//         id: "jean",
+//       },
+//     ],
+//   },
+//   {
+//     id: "44455",
+//     msg: "this is a topic 2222",
+//     date: new Date("04-24-2020"),
+//     likes: 2,
+//     user: [
+//       {
+//         id: "nol",
+//       },
+//     ],
+//   },
+// ];

@@ -1,19 +1,15 @@
-const { ApolloServer } = require("apollo-server-express");
-const express = require("express");
-const color = require('colors')
-const http = require('http')
-const app = express();
+const { ApolloServer } = require("apollo-server");
+const color = require("colors");
 const mongoose = require("mongoose");
 const resolvers = require("./resolvers/resolvers");
 const typeDefs = require("./schemas/typeDefs");
 require("dotenv").config();
-const uristring = process.env.MONGO_URI
+const uristring = process.env.MONGO_URI;
 
-
-mongoose.connect(
-  uristring,
-  { useNewUrlParser: true, useUnifiedTopology: true }
-);
+mongoose.connect(uristring, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const db = mongoose.connection;
 
@@ -33,19 +29,16 @@ const server = new ApolloServer({
   playground: true,
 });
 
-server.applyMiddleware({ app });
-
-
+// server.applyMiddleware({ });
 
 db.on("error", console.error.bind(console, "connection error:".bgRed));
 db.once("open", function () {
-  console.log("✅ db connected".bgBrightMagenta);
-  app.listen(
-    {
+  console.log("✅ db connected ✅".rainbow);
+  server
+    .listen({
       port: process.env.PORT || 5000,
-    },
-    () => {
-      console.log(`Server started at http://localhost:${process.env.PORT}`.bgBrightCyan);
-    }
-  );
+    })
+    .then(({ url }) => {
+      console.log(`Server started at ${url}`);
+    });
 });
