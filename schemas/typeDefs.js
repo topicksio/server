@@ -9,45 +9,52 @@ module.exports = gql`
   }
 
   type User {
-    id: ID!
-    name: String!
-    topPoints: Int
+    name: String
   }
 
-  type Topic {
-    id: ID!
-    msg: String!
-    date: Date
+  type SoloTopic {
+    msg: String
+    userId: String
     likes: Int
-    status: Status
-    user: [User]
   }
 
   type Query {
-    topics: [Topic]
-    topic(id: ID): Topic
+    users: [User]
   }
-
   input UserInput {
-    id: ID
-    name: String
-    topPoints: Int
+    userIds: [UserTopics]
   }
 
-  input TopicInput {
-    id: ID
+  input UserTopics {
+    name: String
+  }
+
+  input SoloTopics {
     msg: String
-    date: Date
+    userId: String
     likes: Int
-    status: Status
-    user: [UserInput]
   }
 
   type Mutation {
-    addTopic(topic: TopicInput): [Topic]
+    addUser: [User]
   }
 
-  type Subscription {
-    topicAdded: Topic
-  }
+  # type Subscription {
+  #   topicAdded: Topic
+  # }
 `;
+
+const users = {
+  lotso: {
+    topics: [
+      { topic: "gitjgojtre", from: "user1", likes: 501 },
+      { topic: "gitjgojtre22", from: "user44", like: 654 },
+    ],
+  },
+  trainwreckstv: {
+    topics: [
+      { topic: "gitjgojtre", from: "user1", like: 888 },
+      { topic: "gitjgojtre22", from: "user44", like: 489 },
+    ],
+  },
+};

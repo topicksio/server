@@ -19,7 +19,7 @@ const server = new ApolloServer({
   //Add context like usernames and 0authentication. passes through resolvers as context etc....
   context: ({ req }) => {
     const fakeUser = {
-      userId: "helloImaUser",
+      userId: "lotso",
     };
     return {
       ...fakeUser,
