@@ -60,6 +60,7 @@ module.exports = {
         }
         return topics;
       } catch (e) {
+        console.log(e)
         return [];
       }
     },
