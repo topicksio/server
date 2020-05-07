@@ -9,45 +9,42 @@ module.exports = gql`
   }
 
   type User {
-    id: ID!
-    name: String!
-    topPoints: Int
+    id: ID
+    userId: String
+    topics: [SoloTopic]
   }
 
-  type Topic {
-    id: ID!
-    msg: String!
-    date: Date
+  type SoloTopic {
+    id: ID
+    topic: String
+    from: String
     likes: Int
-    status: Status
-    user: [User]
   }
 
   type Query {
-    topics: [Topic]
-    topic(id: ID): Topic
+    users: [User]
+    user(id: ID): User
   }
 
   input UserInput {
-    id: ID
-    name: String
-    topPoints: Int
+    userId: String
+    topics: [TopicInput]
   }
 
   input TopicInput {
-    id: ID
-    msg: String
-    date: Date
+    topic: String
+    from: String
     likes: Int
-    status: Status
-    user: [UserInput]
   }
+
 
   type Mutation {
-    addTopic(topic: TopicInput): [Topic]
+    addUser(user: UserInput): User
+    addTopic(id: String ,topic: TopicInput): SoloTopic
   }
 
-  type Subscription {
-    topicAdded: Topic
-  }
+  # type Subscription {
+  #   topicAdded: Topic
+  # }
 `;
+
