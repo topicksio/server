@@ -16,7 +16,7 @@ module.exports = {
   // },
 
   Query: {
-    users: () => {
+    users: async () => {
       try {
         const allUsers = User.find();
         return allUsers;
@@ -25,24 +25,47 @@ module.exports = {
         return [];
       }
     },
+    user: async (obj, { id }, context) => {
+      console.log(id);
+      try {
+        const foundUser = await User.findById(id);
+        return foundUser;
+      } catch (e) {
+        console.log(e);
+        return [];
+      }
+    },
   },
 
   Mutation: {
-    addUser: async (obj, args, { userId }) => {
-      console.log(args);
+    addUser: async (obj, { user }, context) => {
+      console.log(user);
       try {
-        if (userId) {
+        if (user.userId) {
           const newUser = await User.create({
-            lotso: {
-              topics: [
-                { topic: "gitjgojtre", from: "user1", likes: 501 },
-                { topic: "gitjgojtre22", from: "user44", like: 654 },
-              ],
-            },
+            ...user,
           });
-          return userId;
+
+          return newUser;
         }
       } catch (e) {
+        console.log(e);
+        return [];
+      }
+    },
+    addTopic: async (obj, { id, topic }, context) => {
+      // console.log("id", id)
+      console.log("new topic", topic);
+
+      try {
+        const foundUser = await User.findByIdAndUpdate(id, {
+          $push: {
+            'topics': topic,
+          },
+        });
+        return foundUser;
+      } catch (e) {
+        console.log(e);
         return [];
       }
     },

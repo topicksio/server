@@ -9,6 +9,7 @@ const uristring = process.env.MONGO_URI;
 mongoose.connect(uristring, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useFindAndModify: false
 });
 
 const db = mongoose.connection;
