@@ -41,9 +41,9 @@ module.exports = gql`
 
   type Mutation {
     addUser(user: UserInput): User
-    addTopic(id: String ,topic: TopicInput): SoloTopic
     deleteUser(id: String): User
-    deleteTopic(id: ID): SoloTopic
+    addTopic(id: String ,topic: TopicInput): SoloTopic
+    deleteTopic(id: String): SoloTopic
   }
 
   # type Subscription {

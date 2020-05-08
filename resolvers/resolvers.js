@@ -7,7 +7,6 @@ const User = require("../schemas/userSchema");
 const pubsub = new PubSub();
 const TOPIC_ADDED = "TOPIC_ADDED";
 
-
 /*A resolver is a function that's responsible for populating the data for a single field in your schema. It can populate that data in any way you define, such as by fetching data from a back-end database or a third-party API. If you don't define a resolver for a particular field, Apollo Server automatically defines a default resolver for it.*/
 module.exports = {
   // Subscription: {
@@ -37,10 +36,9 @@ module.exports = {
       }
     },
     topic: async (obj, { id }, context) => {
-      
       try {
-        const foundTopic = User.findOne({id});
-        
+        const foundTopic = User.findOne({ id });
+
         return foundTopic;
       } catch (e) {
         console.log(e);
@@ -75,7 +73,7 @@ module.exports = {
             topics: topic,
           },
         });
-        return foundUser;
+        return topic;
       } catch (e) {
         console.log(e);
         return [];
@@ -99,20 +97,19 @@ module.exports = {
     },
     deleteTopic: async (obj, { id }, context) => {
       // console.log("id", id)
-      console.log(id);
+      // console.log(id);
 
       try {
-        // const deletedTopic = await User.findByIdAndUpdate(id, {
-        //   $pull: {
-        //     topics: { id: new ObjectId(id) },
-        //   },
-        // });
-        const deletedTopic = await TopicModel.deleteOne({ id });
+        const deletedTopic = User.findOneAndRemove({"topics._id": id}, {
+          $pull: { topics: { _id: id } },
+        });
+        
         return deletedTopic;
       } catch (e) {
         console.log(e);
         return [];
       }
+      // const deletedTopic = await TopicModel.deleteOne({ id });
     },
   },
 
