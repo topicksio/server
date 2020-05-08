@@ -1,15 +1,9 @@
 const mongoose = require("mongoose");
-
-const Topics = new mongoose.Schema({
-  topic: String,
-  from: String,
-  likes: Number,
-});
+const { Topic } = require("../schemas/topicSchema");
 
 const User = new mongoose.Schema({
   userId: String,
-  topics: [Topics],
+  topics: [Topic],
 });
 
 module.exports = mongoose.model("User", User);
-

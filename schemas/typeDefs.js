@@ -23,7 +23,8 @@ module.exports = gql`
 
   type Query {
     users: [User]
-    user(id: ID): User
+    user(id: String): User
+    topic(id: String): SoloTopic
   }
 
   input UserInput {
@@ -41,6 +42,8 @@ module.exports = gql`
   type Mutation {
     addUser(user: UserInput): User
     addTopic(id: String ,topic: TopicInput): SoloTopic
+    deleteUser(id: String): User
+    deleteTopic(id: ID): SoloTopic
   }
 
   # type Subscription {
