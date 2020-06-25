@@ -12,6 +12,7 @@ mongoose.connect(uristring, {
   useFindAndModify: false
 });
 
+
 const db = mongoose.connection;
 
 const server = new ApolloServer({
